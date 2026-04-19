@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { Button } from '@/components/Button';
 import { Nav } from '@/components/Nav';
 import { ConnectButton } from '@/components/ConnectButton';
-import { ensureSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { getConnectionIdBySession } from '@/lib/supabase/jobs';
 
 async function ConnectOrContinue() {
-  const sid = await ensureSession();
-  const conn = await getConnectionIdBySession(sid);
+  const session = await getSession();
+  const conn = session.sid ? await getConnectionIdBySession(session.sid) : null;
   if (conn) {
     return (
       <Link href="/generate">

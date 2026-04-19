@@ -1,12 +1,12 @@
 import { redirect } from 'next/navigation';
 import { Nav } from '@/components/Nav';
 import { GenerateForm } from '@/components/GenerateForm';
-import { ensureSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 import { getConnectionIdBySession } from '@/lib/supabase/jobs';
 
 export default async function Generate() {
-  const sid = await ensureSession();
-  const conn = await getConnectionIdBySession(sid);
+  const session = await getSession();
+  const conn = session.sid ? await getConnectionIdBySession(session.sid) : null;
   if (!conn) redirect('/');
 
   return (
