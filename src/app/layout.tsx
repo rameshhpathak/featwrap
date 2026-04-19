@@ -17,26 +17,27 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const TITLE = 'Feature Wrapped — Agents wrote 100 PRs this week. Hear them.';
+const DESCRIPTION =
+  'AI agents now ship more code than your team can read. Feature Wrapped turns every merged PR into a 90-second podcast — re-narrated for marketing, sales, CS, and engineering.';
+
 export const metadata: Metadata = {
-  title: "Featwrap — This week's PRs as a 5-minute podcast",
-  description:
-    "Connect GitHub. Pick a repo. Featwrap turns every week of merged PRs into a 5-minute audio digest — written four ways for marketing, sales, support & engineering.",
+  title: TITLE,
+  description: DESCRIPTION,
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
   },
   openGraph: {
-    title: "Featwrap — This week's PRs as a 5-minute podcast",
-    description:
-      "Connect GitHub. Pick a repo. Featwrap turns every week of merged PRs into a 5-minute audio digest — written four ways for marketing, sales, support & engineering.",
+    title: TITLE,
+    description: DESCRIPTION,
     type: 'website',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Featwrap — This week's PRs as a 5-minute podcast",
-    description:
-      "Connect GitHub. Pick a repo. Featwrap turns every week of merged PRs into a 5-minute audio digest — written four ways for marketing, sales, support & engineering.",
+    title: TITLE,
+    description: DESCRIPTION,
     images: ['/og-image.jpg'],
   },
 };
