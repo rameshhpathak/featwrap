@@ -1,0 +1,47 @@
+[
+  {
+    "number": 12,
+    "title": "Add price filter to search",
+    "body": "Customers can now filter search results by price range.",
+    "user": { "login": "rameshh" },
+    "merged_at": "2026-04-18T10:00:00Z",
+    "state": "closed",
+    "head": { "sha": "aaaa111" }
+  },
+  {
+    "number": 13,
+    "title": "Extract cart hook into useCart()",
+    "body": "Refactor only. No user-visible change.",
+    "user": { "login": "rameshh" },
+    "merged_at": "2026-04-17T10:00:00Z",
+    "state": "closed",
+    "head": { "sha": "bbbb222" }
+  },
+  {
+    "number": 14,
+    "title": "Fix typo in cart tooltip",
+    "body": "Tiny copy fix.",
+    "user": { "login": "rameshh" },
+    "merged_at": "2026-04-16T10:00:00Z",
+    "state": "closed",
+    "head": { "sha": "cccc333" }
+  },
+  {
+    "number": 15,
+    "title": "Draft: new landing",
+    "body": "WIP",
+    "user": { "login": "rameshh" },
+    "merged_at": null,
+    "state": "open",
+    "head": { "sha": "dddd444" }
+  },
+  {
+    "number": 16,
+    "title": "Really old merge",
+    "body": "",
+    "user": { "login": "rameshh" },
+    "merged_at": "2025-12-01T10:00:00Z",
+    "state": "closed",
+    "head": { "sha": "eeee555" }
+  }
+]
