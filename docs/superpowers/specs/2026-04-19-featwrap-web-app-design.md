@@ -114,7 +114,7 @@ featwrap/
 │   │   │   │   ├── github.ts    # listMergedPRs + getPRDiff via Composio
 │   │   │   │   └── classify.ts  # classifyPRs(prs) → LLM + cache
 │   │   │   ├── script/
-│   │   │   │   ├── writer.ts    # writeScript(prs, audience) → Script
+│   │   │   │   ├── writer.ts    # writeScript(prs, classifications, audience) → Script
 │   │   │   │   └── prompts/
 │   │   │   │       ├── base.ts
 │   │   │   │       ├── marketing.ts
@@ -330,7 +330,7 @@ Three areas stacked in a single 720–840 px column:
 1. **Form** — card-less, flush to the column:
    - **Repo** — combobox; options pulled from `/api/repos`. Shows `owner/name` in mono. Supports typing to filter. If `/api/repos` fails, falls back to a plain text input.
    - **Since** — dropdown: `1 day`, `3 days`, `7 days` (default), `14 days`.
-   - **Audience** — multiselect chips: `Marketing` (default checked), `Sales`, `CS`, `Engineering`. At least one required.
+   - **Audience** — single-select dropdown with five options: `Marketing` (default), `Sales`, `CS`, `Engineering`, `All four`. Matches `jobs.audience` values `marketing|sales|cs|dev|all`.
    - **Generate** button — solid black.
 2. **Job status card** — visible when a job exists. Bordered box rendered as terminal output:
    ```
