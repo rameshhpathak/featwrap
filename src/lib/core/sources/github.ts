@@ -50,11 +50,13 @@ export async function listMergedPRs(
     params: { owner, repo: name, state: 'closed', sort: 'updated', direction: 'desc', per_page: 100 },
   });
 
-  // Composio may wrap the GitHub response in various shapes; normalise to array.
+  // Composio v0.4's GITHUB_LIST_PULL_REQUESTS returns { pull_requests: [...] }.
+  // Defend against the raw array form + common wrapper field names too.
   const payload = res.data as unknown;
   const raw: RawPR[] = Array.isArray(payload)
     ? (payload as RawPR[])
-    : ((payload as { items?: RawPR[] } | null)?.items
+    : ((payload as { pull_requests?: RawPR[] } | null)?.pull_requests
+        ?? (payload as { items?: RawPR[] } | null)?.items
         ?? (payload as { data?: RawPR[] } | null)?.data
         ?? []);
   return raw
