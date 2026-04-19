@@ -3,10 +3,21 @@ import type {
   Audience, AudienceRequest, PipelineContext, PullRequest, PRClassification, Script,
 } from './types';
 
+export interface WriteScriptOptions {
+  minWords: number;
+  maxWords: number;
+  windowDescription: string;
+}
+
 export interface PipelineDeps {
   fetchPRs(repo: string, since: string, composioConnId: string): Promise<PullRequest[]>;
   classifyPRs(prs: PullRequest[], repo: string): Promise<PRClassification[]>;
-  writeScript(prs: PullRequest[], classifications: PRClassification[], audience: Audience): Promise<Script>;
+  writeScript(
+    prs: PullRequest[],
+    classifications: PRClassification[],
+    audience: Audience,
+    options?: WriteScriptOptions,
+  ): Promise<Script>;
   renderVoice(script: Script): Promise<Buffer>;
   storage: {
     uploadMp3(jobId: string, audience: Audience, mp3: Buffer): Promise<string>;
@@ -21,6 +32,40 @@ const ALL: Audience[] = ['marketing', 'sales', 'cs', 'dev'];
 
 function expand(a: AudienceRequest): Audience[] {
   return a === 'all' ? ALL : [a];
+}
+
+function parseSinceDays(since: string): number {
+  const m = /^(\d+)([dh])$/.exec(since);
+  if (!m) return 7;
+  const n = parseInt(m[1], 10);
+  return m[2] === 'd' ? n : n / 24;
+}
+
+/**
+ * Compute a narration length band from the window + PR count so a daily digest
+ * doesn't come out as long as a monthly one. Roughly: 160 words ≈ 60 s of
+ * conversational narration.
+ */
+export function targetWordRange(since: string, prCount: number): WriteScriptOptions {
+  const days = parseSinceDays(since);
+
+  let baseMin: number;
+  let baseMax: number;
+  let windowDescription: string;
+
+  if (days <= 1)        { baseMin = 100; baseMax = 160; windowDescription = 'a single day'; }
+  else if (days <= 3)   { baseMin = 150; baseMax = 230; windowDescription = 'the last few days'; }
+  else if (days <= 7)   { baseMin = 220; baseMax = 360; windowDescription = 'a week'; }
+  else if (days <= 14)  { baseMin = 340; baseMax = 520; windowDescription = 'the last two weeks'; }
+  else if (days <= 30)  { baseMin = 500; baseMax = 780; windowDescription = 'the last month'; }
+  else                  { baseMin = 650; baseMax = 1100; windowDescription = `the last ${Math.round(days)} days`; }
+
+  // Nudge by PR volume, bounded so it can't run away on either side.
+  const prAdjust = Math.min(220, Math.max(-90, (prCount - 5) * 22));
+  const minWords = Math.max(80, baseMin + Math.round(prAdjust / 2));
+  const maxWords = Math.max(minWords + 60, baseMax + prAdjust);
+
+  return { minWords, maxWords, windowDescription };
 }
 
 export async function runPipeline(ctx: PipelineContext, deps: PipelineDeps): Promise<void> {
@@ -40,12 +85,14 @@ export async function runPipeline(ctx: PipelineContext, deps: PipelineDeps): Pro
     const totalAuds = audiences.length;
     const limit = pLimit(2);
 
+    const target = targetWordRange(since, prs.length);
+
     await deps.db.updateJob(jobId, { step: 'writing the script', progress: 40 });
 
     let completed = 0;
     await Promise.all(audiences.map(aud => limit(async () => {
       try {
-        const script = await deps.writeScript(prs, classifications, aud);
+        const script = await deps.writeScript(prs, classifications, aud, target);
         await deps.db.updateJob(jobId, { step: 'recording the voice', progress: 50 + Math.floor((completed / totalAuds) * 30) });
         const mp3 = await deps.renderVoice(script);
         const path = await deps.storage.uploadMp3(jobId, aud, mp3);

@@ -1,6 +1,6 @@
 import type { Audience, PRClassification, PullRequest, Script } from '../types';
 import type { LLMCompleteFn } from '../sources/classify';
-import { BASE_SYSTEM } from './prompts/base';
+import { BASE_SYSTEM, buildBaseSystem } from './prompts/base';
 import { MARKETING_ANGLE } from './prompts/marketing';
 import { SALES_ANGLE } from './prompts/sales';
 import { CS_ANGLE } from './prompts/cs';
@@ -8,6 +8,13 @@ import { DEV_ANGLE } from './prompts/dev';
 
 export interface WriterDeps {
   llmComplete: LLMCompleteFn;
+}
+
+export interface WriterOptions {
+  // Target a specific length band for the narration.
+  minWords: number;
+  maxWords: number;
+  windowDescription: string; // "a day", "a week", "the last month", etc.
 }
 
 const ANGLES: Record<Audience, string> = {
@@ -43,10 +50,18 @@ export async function writeScript(
   classifications: PRClassification[],
   audience: Audience,
   deps: WriterDeps,
+  options?: WriterOptions,
 ): Promise<Script> {
-  const system = `${BASE_SYSTEM}\n\n${ANGLES[audience]}`;
+  const base = options
+    ? buildBaseSystem(options)
+    : BASE_SYSTEM;
+  const system = `${base}\n\n${ANGLES[audience]}`;
   const user = buildUserPrompt(prs, classifications);
-  const res = await deps.llmComplete({ system, user, maxTokens: 700 });
+  // Target token budget scaled to the word budget (loose 1.4 tokens/word) + a
+  // buffer for the system prompt overhead.
+  const maxWords = options?.maxWords ?? 270;
+  const maxTokens = Math.max(700, Math.ceil(maxWords * 1.7) + 200);
+  const res = await deps.llmComplete({ system, user, maxTokens });
   const rawText = res.content.find(c => c.type === 'text')?.text ?? '';
   const text = stripFences(rawText);
   const wordCount = text.split(/\s+/).filter(Boolean).length;

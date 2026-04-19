@@ -23,8 +23,14 @@ export function liveDeps(): PipelineDeps {
         repo,
       });
     },
-    async writeScript(prs, classifications, audience) {
-      return writeScript(prs, classifications, audience, { llmComplete: anthropicComplete });
+    async writeScript(prs, classifications, audience, options) {
+      return writeScript(
+        prs,
+        classifications,
+        audience,
+        { llmComplete: anthropicComplete },
+        options,
+      );
     },
     async renderVoice(script) {
       return renderVoice(script, {

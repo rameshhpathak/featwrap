@@ -35,7 +35,12 @@ describe('runPipeline', () => {
     await runPipeline({ jobId: 'j1', repo: 'o/r', since: '7d', audience: 'marketing', composioConnId: 'cc', connectionId: 'conn' }, deps);
     expect(deps.fetchPRs).toHaveBeenCalledOnce();
     expect(deps.classifyPRs).toHaveBeenCalledOnce();
-    expect(deps.writeScript).toHaveBeenCalledWith(prs, classifications, 'marketing');
+    expect(deps.writeScript).toHaveBeenCalledWith(
+      prs,
+      classifications,
+      'marketing',
+      expect.objectContaining({ minWords: expect.any(Number), maxWords: expect.any(Number), windowDescription: expect.any(String) }),
+    );
     expect(deps.renderVoice).toHaveBeenCalledOnce();
     expect(deps.storage.uploadMp3).toHaveBeenCalledWith('j1', 'marketing', expect.any(Buffer));
     expect(deps.db.insertDigest).toHaveBeenCalledWith(expect.objectContaining({
