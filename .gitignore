@@ -7,3 +7,10 @@ node_modules/
 .DS_Store
 dist/
 .next/
+/node_modules
+/.next
+/out
+.env
+.env.local
+*.log
+.DS_Store
