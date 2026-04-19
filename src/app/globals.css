@@ -2,22 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --paper:   #F3F1E8;
-  --paper-2: #EAE6D8;
-  --ink:     #0A0A0A;
-  --ash:     #767264;
-  --rule:    #0A0A0A;
-  --accent:  #FAE550;
-  --ok:      #1F7A3A;
-  --err:     #B42318;
+/* Featwrap — Brutalist minimal design system. Light mode only. All colors HSL. */
+
+@layer base {
+  :root {
+    --background: 48 33% 96%;          /* warm off-white paper */
+    --foreground: 0 0% 7%;             /* near-black ink */
+
+    --ink: 0 0% 7%;
+    --paper: 48 33% 96%;
+    --accent-yellow: 54 100% 62%;      /* highlighter yellow */
+    --accent-red: 8 92% 56%;           /* alert red */
+    --accent-blue: 222 89% 55%;        /* link blue */
+
+    --muted: 48 20% 90%;
+    --muted-foreground: 0 0% 30%;
+
+    --destructive: 8 92% 56%;
+    --destructive-foreground: 48 33% 96%;
+
+    --border: 0 0% 7%;
+    --ring: 0 0% 7%;
+  }
 }
 
-html, body {
-  background: var(--paper);
-  color: var(--ink);
+@layer base {
+  * { border-color: hsl(var(--border)); }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
 }
 
-* { border-color: var(--ink); }
+@layer components {
+  .brutal-border {
+    @apply border-[3px] border-foreground;
+  }
+  .brutal-shadow {
+    box-shadow: 6px 6px 0 0 hsl(var(--ink));
+  }
+  .brutal-shadow-lg {
+    box-shadow: 10px 10px 0 0 hsl(var(--ink));
+  }
+  .brutal-shadow-sm {
+    box-shadow: 3px 3px 0 0 hsl(var(--ink));
+  }
+  .brutal-hover {
+    @apply transition-transform duration-150;
+  }
+  .brutal-hover:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 0 hsl(var(--ink));
+  }
+  .brutal-hover:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 hsl(var(--ink));
+  }
+}
 
-::selection { background: var(--accent); color: var(--ink); }
+::selection { background: hsl(var(--accent-yellow)); color: hsl(var(--ink)); }

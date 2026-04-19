@@ -62,8 +62,8 @@ export function JobView({ jobId, repo, since, audience, onRetryWithSince }: JobV
 
   if (!job) {
     return (
-      <div className="border-2 border-ink bg-paper p-8 font-mono text-[13px] text-ash">
-        starting…
+      <div className="brutal-border bg-background p-6 md:p-8 font-mono text-sm text-muted-foreground">
+        ◌ starting…
       </div>
     );
   }
@@ -94,19 +94,16 @@ export function JobView({ jobId, repo, since, audience, onRetryWithSince }: JobV
 
 function NoPRsHelp({ currentSince, onRetryWithSince }: { currentSince: string; onRetryWithSince: (v: string) => void }) {
   const currentDays = sinceToDays(currentSince);
-  const suggestions = SINCE
-    .filter(s => sinceToDays(s.v) > currentDays)
-    .slice(0, 4);
+  const suggestions = SINCE.filter(s => sinceToDays(s.v) > currentDays).slice(0, 4);
 
   return (
-    <div className="border-2 border-ink bg-accent/30">
-      <div className="h-11 flex items-center px-5 bg-ink text-paper font-mono text-[12px] tracking-[0.14em] uppercase">
-        ▸ Try a wider window
+    <div className="brutal-border bg-accent-yellow/50">
+      <div className="flex items-center px-5 py-3 bg-foreground text-background font-mono text-[11px] tracking-wider">
+        ▸ TRY A WIDER WINDOW
       </div>
-      <div className="p-7">
-        <p className="font-serif text-[20px] leading-[1.4] max-w-[620px]">
-          No merged PRs in the last <span className="font-bold">{currentSince}</span>.
-          Most teams ship in bursts — widening the window usually gets you enough material for a digest.
+      <div className="p-6 md:p-8">
+        <p className="text-lg md:text-xl leading-snug max-w-xl">
+          No merged PRs in the last <span className="font-medium">{currentSince}</span>. Teams ship in bursts — widening the window usually gets you enough material for a digest.
         </p>
         {suggestions.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-3">
@@ -115,15 +112,15 @@ function NoPRsHelp({ currentSince, onRetryWithSince }: { currentSince: string; o
                 key={s.v}
                 type="button"
                 onClick={() => onRetryWithSince(s.v)}
-                className="inline-flex items-center h-12 px-5 border-2 border-ink bg-paper font-mono text-[13px] font-semibold tracking-[0.14em] uppercase hover:bg-ink hover:text-paper transition-colors"
+                className="inline-flex items-center brutal-border brutal-shadow brutal-hover bg-background font-mono font-bold text-xs tracking-wider uppercase px-4 py-3"
               >
                 Try {s.l} →
               </button>
             ))}
           </div>
         )}
-        <p className="mt-6 font-mono text-[11px] tracking-[0.14em] uppercase text-ink/70">
-          Or pick a more active repo from the list.
+        <p className="mt-6 font-mono text-[11px] tracking-wider text-muted-foreground">
+          OR PICK A MORE ACTIVE REPO FROM THE LIST.
         </p>
       </div>
     </div>

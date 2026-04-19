@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Button } from '@/components/Button';
 import { Nav } from '@/components/Nav';
 import { ConnectButton } from '@/components/ConnectButton';
 import { getSession } from '@/lib/session';
@@ -10,90 +9,115 @@ async function HeroCTA() {
   const conn = session.sid ? await getConnectionIdBySession(session.sid) : null;
   if (conn) {
     return (
-      <Link href="/generate">
-        <Button>Start a digest →</Button>
+      <Link
+        href="/generate"
+        className="inline-flex items-center gap-2 brutal-border brutal-shadow brutal-hover bg-foreground text-background font-mono font-bold text-sm tracking-wider uppercase px-5 py-3"
+      >
+        Start a digest →
       </Link>
     );
   }
   return <ConnectButton />;
 }
 
-function AlertPill() {
-  return (
-    <div className="inline-flex items-center gap-3 h-11 pl-4 pr-5 bg-accent border border-ink font-mono text-[12px] font-semibold tracking-[0.14em] uppercase">
-      <span aria-hidden>⚡</span>
-      Early access — connect your repo
-    </div>
-  );
-}
-
-function FeatureGrid() {
-  const items = [
-    { k: 'Connect', v: 'GitHub in 1 click' },
-    { k: 'Listen', v: '60–90s per digest' },
-    { k: 'Share', v: '4 audience cuts' },
-  ];
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10">
-      {items.map(it => (
-        <div key={it.k} className="border-t-2 border-ink pt-6">
-          <div className="font-mono text-[13px] font-bold tracking-[0.14em] uppercase mb-2">
-            {it.k}
-          </div>
-          <div className="font-mono text-[13px] tracking-[0.08em] uppercase text-ash">
-            {it.v}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function Home() {
   return (
-    <div className="min-h-screen bg-paper">
-      <div className="mx-auto max-w-[1240px] px-8 lg:px-14">
-        <Nav />
-        <hr className="border-t border-ink" />
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <Nav />
 
-        <section className="pt-20 pb-10">
-          <AlertPill />
+      <main>
+        <section className="max-w-3xl mx-auto px-6 pt-20 pb-24 w-full">
+          <span className="inline-block font-mono text-[11px] tracking-wider px-2 py-1 brutal-border bg-accent-yellow mb-8">
+            ⚡ EARLY ACCESS — CONNECT YOUR REPO
+          </span>
 
-          <h1 className="mt-12 font-serif font-black tracking-[-0.02em] leading-[0.95] text-[clamp(54px,8vw,112px)] max-w-[1100px]">
-            <span className="block">This week&apos;s PRs,</span>
-            <span className="block">as a{' '}
-              <span className="bg-ink text-paper px-4 pb-1 pt-0.5 inline-block">5-minute podcast.</span>
+          <h1 className="font-bold tracking-tighter leading-[0.95] text-5xl md:text-7xl">
+            This week&apos;s PRs,<br />
+            as a{' '}
+            <span className="relative inline-block">
+              <span className="relative z-10">5-minute podcast.</span>
+              <span
+                aria-hidden
+                className="absolute left-0 right-0 bottom-[0.08em] h-[0.28em] bg-accent-yellow -z-0"
+              />
             </span>
           </h1>
 
-          <p className="mt-10 max-w-[640px] font-serif text-[22px] leading-[1.45] text-ink/80">
-            Connect GitHub. Pick a repo. Featwrap reads every merged PR and ships
-            a short audio digest your <span className="font-bold">whole team</span> will
-            actually press play on — written four ways for marketing, sales,
-            support &amp; engineering.
+          <p className="mt-8 text-lg md:text-xl max-w-xl leading-snug">
+            Connect GitHub. Pick a repo. Featwrap reads every merged PR and ships a short audio
+            digest your <span className="font-medium">whole team</span> will actually press play on
+            — written four ways for marketing, sales, support &amp; engineering.
           </p>
 
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <HeroCTA />
-            <span className="font-mono text-[12px] tracking-[0.14em] uppercase text-ash">
-              Free while in beta · no spam · unsubscribe anytime
+            <span className="font-mono text-[11px] tracking-wider text-muted-foreground">
+              FREE WHILE IN BETA · NO SPAM · UNSUBSCRIBE ANYTIME
             </span>
           </div>
-        </section>
 
-        <section className="pt-14 pb-24">
-          <div className="font-mono text-[13px] font-semibold tracking-[0.14em] uppercase text-ash mb-2">
-            ▾ How it works
+          <div className="mt-16 grid grid-cols-3 gap-6 max-w-md font-mono text-xs">
+            <div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">CONNECT</div>
+              <div className="text-muted-foreground mt-1">GITHUB IN 1 CLICK</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">LISTEN</div>
+              <div className="text-muted-foreground mt-1">60-90s PER DIGEST</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">SHARE</div>
+              <div className="text-muted-foreground mt-1">4 AUDIENCE CUTS</div>
+            </div>
           </div>
-          <FeatureGrid />
         </section>
 
-        <hr className="border-t border-ink" />
-        <footer className="flex items-center justify-between py-7 font-mono text-[12px] tracking-[0.14em] uppercase">
-          <span>© 2026 Featwrap</span>
-          <span>Shipped → Heard</span>
-        </footer>
-      </div>
+        <section className="border-t-[3px] border-foreground bg-paper">
+          <div className="max-w-3xl mx-auto px-6 py-20">
+            <div className="mb-8">
+              <span className="font-mono text-[11px] tracking-wider text-muted-foreground">
+                ▼ HOW IT WORKS
+              </span>
+              <h2 className="mt-2 text-4xl md:text-5xl font-bold tracking-tighter leading-[0.95]">
+                One repo. Four<br />ways to listen.
+              </h2>
+              <p className="mt-4 text-base text-muted-foreground max-w-md">
+                Same week of PRs, re-narrated for whoever needs to hear it — marketing, sales, support, engineering.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="brutal-border bg-background p-6">
+                <div className="font-mono text-[11px] tracking-wider text-muted-foreground">01 · CONNECT</div>
+                <div className="mt-2 font-bold text-lg">Authorize via Composio.</div>
+                <div className="mt-1 text-muted-foreground text-sm leading-snug">One OAuth click. We read your merged PRs — nothing else.</div>
+              </div>
+              <div className="brutal-border bg-background p-6">
+                <div className="font-mono text-[11px] tracking-wider text-muted-foreground">02 · PICK</div>
+                <div className="mt-2 font-bold text-lg">Repo and time window.</div>
+                <div className="mt-1 text-muted-foreground text-sm leading-snug">Any repo your token can reach. 1 day to 90 days.</div>
+              </div>
+              <div className="brutal-border bg-background p-6">
+                <div className="font-mono text-[11px] tracking-wider text-muted-foreground">03 · NARRATE</div>
+                <div className="mt-2 font-bold text-lg">Claude writes. ElevenLabs speaks.</div>
+                <div className="mt-1 text-muted-foreground text-sm leading-snug">One script per audience, re-narrated for the listener.</div>
+              </div>
+              <div className="brutal-border bg-background p-6">
+                <div className="font-mono text-[11px] tracking-wider text-muted-foreground">04 · SHIP</div>
+                <div className="mt-2 font-bold text-lg">Play in-browser, download MP3.</div>
+                <div className="mt-1 text-muted-foreground text-sm leading-snug">60-90s each. Scheduled delivery coming.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t-[3px] border-foreground">
+        <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between font-mono text-[11px] tracking-wider text-muted-foreground">
+          <span>© 2026 FEATWRAP</span>
+          <span>SHIPPED → HEARD</span>
+        </div>
+      </footer>
     </div>
   );
 }

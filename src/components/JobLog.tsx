@@ -10,7 +10,7 @@ interface JobLogProps {
 }
 
 function bar(progress: number): string {
-  const filled = Math.max(0, Math.min(24, Math.round(progress / 100 * 24)));
+  const filled = Math.max(0, Math.min(24, Math.round((progress / 100) * 24)));
   return '█'.repeat(filled) + '░'.repeat(24 - filled);
 }
 
@@ -24,22 +24,23 @@ export function JobLog(p: JobLogProps) {
     p.status === 'failed' ? `error: ${p.error ?? 'unknown'}` :
     `${bar(p.progress)}  ${p.progress}%`;
   const statusColor =
-    p.status === 'failed' ? 'text-err' :
-    p.status === 'complete' ? 'text-ok' :
+    p.status === 'failed' ? 'text-accent-red' :
+    p.status === 'complete' ? 'text-foreground' :
     '';
+
   return (
-    <div className="border-2 border-ink bg-paper">
-      <div className="flex items-center justify-between h-11 px-5 bg-ink text-paper font-mono text-[12px] tracking-[0.14em] uppercase">
-        <span>▸ Pipeline</span>
-        <span className="opacity-75">{p.status}</span>
+    <div className="brutal-border bg-background">
+      <div className="flex items-center justify-between px-5 py-3 bg-foreground text-background font-mono text-[11px] tracking-wider">
+        <span>▸ PIPELINE</span>
+        <span className="opacity-80">{p.status.toUpperCase()}</span>
       </div>
       <div className="p-6 font-mono text-[13px] leading-[1.85]">
-        <div className="text-ash mb-3">
+        <div className="text-muted-foreground mb-3">
           $ featwrap digest --repo {p.repo || '—'} --since {p.since || '—'} --audience {p.audience || '—'}
         </div>
         <div>
-          <span className="text-ash">[{ts(p.startedAt)}]</span>{' '}
-          {p.step ?? 'starting'}{'  '}
+          <span className="text-muted-foreground">[{ts(p.startedAt)}]</span>{' '}
+          <span className="font-medium">{p.step ?? 'starting'}</span>{'  '}
           <span className={statusColor}>{statusNote}</span>
         </div>
       </div>

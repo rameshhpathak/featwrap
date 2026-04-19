@@ -10,34 +10,33 @@ export default async function Generate() {
   if (!conn) redirect('/');
 
   return (
-    <div className="min-h-screen bg-paper">
-      <div className="mx-auto max-w-[1240px] px-8 lg:px-14">
-        <Nav />
-        <hr className="border-t border-ink" />
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <Nav />
 
-        <section className="pt-16 pb-10">
-          <p className="font-mono text-[13px] font-semibold tracking-[0.14em] uppercase text-ash mb-4">
-            ▾ New digest
-          </p>
-          <h1 className="font-serif font-black tracking-[-0.02em] leading-[0.95] text-[clamp(44px,6vw,72px)] max-w-[900px]">
-            <span className="block">One repo.</span>
-            <span className="block">Four ways to listen.</span>
+      <main>
+        <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 w-full">
+          <span className="font-mono text-[11px] tracking-wider text-muted-foreground">
+            ▼ NEW DIGEST
+          </span>
+          <h1 className="mt-2 text-4xl md:text-5xl font-bold tracking-tighter leading-[0.95]">
+            One repo. Four<br />ways to listen.
           </h1>
-          <p className="mt-8 max-w-[620px] font-serif text-[20px] leading-[1.45] text-ink/80">
-            Pick a repo — same week of PRs, re-narrated for whoever needs to hear it.
+          <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-lg">
+            Pick a repo — we&apos;ll read every merged PR in the window and narrate it for whoever needs to hear it.
           </p>
         </section>
 
-        <section className="pb-24">
+        <section className="max-w-3xl mx-auto px-6 pb-24 w-full">
           <GenerateForm />
         </section>
+      </main>
 
-        <hr className="border-t border-ink" />
-        <footer className="flex items-center justify-between py-7 font-mono text-[12px] tracking-[0.14em] uppercase">
-          <span>© 2026 Featwrap</span>
-          <span>Shipped → Heard</span>
-        </footer>
-      </div>
+      <footer className="border-t-[3px] border-foreground">
+        <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between font-mono text-[11px] tracking-wider text-muted-foreground">
+          <span>© 2026 FEATWRAP</span>
+          <span>SHIPPED → HEARD</span>
+        </div>
+      </footer>
     </div>
   );
 }

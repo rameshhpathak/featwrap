@@ -15,8 +15,8 @@ export function RepoPicker({ value, onChange }: { value: string; onChange: (v: s
   }, []);
 
   const inputClass =
-    'w-full h-14 px-4 bg-paper-2 border border-ink font-mono text-[15px] ' +
-    'focus:outline-none focus:bg-accent focus:border-ink placeholder:text-ash';
+    'w-full font-mono text-sm px-4 py-3 brutal-border bg-paper ' +
+    'placeholder:text-muted-foreground focus:outline-none focus:bg-accent-yellow';
 
   if (err || repos === null) {
     return (

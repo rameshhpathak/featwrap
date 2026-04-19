@@ -23,7 +23,7 @@ const AUDIENCES = [
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="block font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-ash mb-3">
+    <label className="block font-mono text-[11px] tracking-wider text-muted-foreground mb-3">
       {children}
     </label>
   );
@@ -76,43 +76,46 @@ export function GenerateForm() {
     );
   }
 
+  const selectClass =
+    'w-full font-mono text-sm px-4 py-3 brutal-border bg-paper ' +
+    'placeholder:text-muted-foreground focus:outline-none focus:bg-accent-yellow';
+
   return (
-    <div className="border-2 border-ink bg-paper">
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        <div className="p-8 md:border-r-2 border-ink">
-          <FieldLabel>Repo</FieldLabel>
+    <div className="brutal-border bg-background p-6 md:p-8 space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <FieldLabel>REPO</FieldLabel>
           <RepoPicker value={repo} onChange={setRepo} />
         </div>
-        <div className="p-8 border-t-2 md:border-t-0 border-ink">
-          <FieldLabel>Since</FieldLabel>
+        <div>
+          <FieldLabel>SINCE</FieldLabel>
           <select
             value={since}
             onChange={e => setSince(e.target.value)}
-            className="w-full h-14 px-4 bg-paper-2 border border-ink font-mono text-[15px] focus:outline-none focus:bg-accent"
+            className={selectClass}
           >
             {SINCE.map(s => <option key={s.v} value={s.v}>{s.l}</option>)}
           </select>
         </div>
       </div>
 
-      <div className="border-t-2 border-ink p-8">
-        <FieldLabel>Audience</FieldLabel>
-        <div className="flex flex-wrap gap-px">
-          {AUDIENCES.map(a => {
+      <div>
+        <FieldLabel>AUDIENCE</FieldLabel>
+        <div className="flex flex-wrap">
+          {AUDIENCES.map((a, i) => {
             const active = audience === a.v;
             return (
               <button
                 key={a.v}
                 type="button"
                 onClick={() => setAudience(a.v)}
-                className={
-                  'flex items-center gap-3 px-5 h-14 border border-ink font-mono text-[13px] font-semibold tracking-[0.1em] uppercase transition-colors ' +
-                  (active ? 'bg-ink text-paper' : 'bg-paper hover:bg-accent')
-                }
+                className={`font-mono text-xs tracking-wider px-4 py-3 brutal-border ${
+                  active
+                    ? 'bg-foreground text-background relative z-10'
+                    : 'bg-paper text-foreground hover:bg-accent-yellow'
+                } ${i > 0 ? '-ml-[3px]' : ''}`}
               >
-                <span className="text-[11px] tracking-[0.2em] opacity-80">{a.code}</span>
-                <span className="opacity-50">·</span>
-                <span>{a.l}</span>
+                {a.code} · {a.l.toUpperCase()}
               </button>
             );
           })}
@@ -120,17 +123,17 @@ export function GenerateForm() {
       </div>
 
       {err && (
-        <div className="border-t-2 border-ink p-6 font-mono text-[13px] text-err">
-          error: {err}
+        <div className="brutal-border bg-accent-red/10 px-4 py-3 font-mono text-sm text-accent-red">
+          ERROR · {err}
         </div>
       )}
 
-      <div className="border-t-2 border-ink p-8 flex flex-wrap items-center gap-5">
+      <div className="flex flex-wrap items-center gap-4 pt-2">
         <Button onClick={() => submit()} disabled={loading}>
           {loading ? 'Starting…' : 'Generate digest →'}
         </Button>
-        <span className="font-mono text-[12px] tracking-[0.14em] uppercase text-ash">
-          60–90 seconds · MP3 in your browser
+        <span className="font-mono text-[11px] tracking-wider text-muted-foreground">
+          60–90 SECONDS · MP3 IN YOUR BROWSER
         </span>
       </div>
     </div>

@@ -7,13 +7,13 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function Button({ children, variant = 'primary', className = '', ...rest }: Props) {
   const base =
-    'inline-flex items-center justify-center h-14 px-7 border border-ink transition-colors ' +
-    'font-mono text-[13px] font-semibold tracking-[0.14em] uppercase ' +
-    'disabled:opacity-40 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center gap-2 brutal-border brutal-hover ' +
+    'font-mono font-bold text-sm tracking-wider uppercase px-5 py-3 ' +
+    'disabled:opacity-60 disabled:cursor-not-allowed disabled:brutal-shadow disabled:hover:translate-x-0 disabled:hover:translate-y-0';
   const style =
     variant === 'primary'
-      ? 'bg-ink text-paper hover:bg-accent hover:text-ink hover:border-ink'
-      : 'bg-paper text-ink hover:bg-ink hover:text-paper';
+      ? 'bg-foreground text-background brutal-shadow'
+      : 'bg-paper text-foreground brutal-shadow';
   return (
     <button className={`${base} ${style} ${className}`} {...rest}>
       {children}

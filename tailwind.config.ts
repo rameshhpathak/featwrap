@@ -5,19 +5,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: 'var(--paper)',
-        'paper-2': 'var(--paper-2)',
-        ink: 'var(--ink)',
-        ash: 'var(--ash)',
-        rule: 'var(--rule)',
-        accent: 'var(--accent)',
-        ok: 'var(--ok)',
-        err: 'var(--err)',
+        border: 'hsl(var(--border))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        ink: 'hsl(var(--ink))',
+        paper: 'hsl(var(--paper))',
+        'accent-yellow': 'hsl(var(--accent-yellow))',
+        'accent-red': 'hsl(var(--accent-red))',
+        'accent-blue': 'hsl(var(--accent-blue))',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
       },
       fontFamily: {
-        serif: ['var(--font-serif)', 'ui-serif', 'Georgia'],
-        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui'],
-        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
     },
   },

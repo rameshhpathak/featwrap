@@ -1,18 +1,43 @@
 'use client';
 import { useRef, useState, useEffect, useMemo } from 'react';
 
-export function AudioPlayer({ src, label }: { src: string; label: string }) {
-  const ref = useRef<HTMLAudioElement>(null);
+const makeBars = (seed: number, n = 56) =>
+  Array.from({ length: n }, (_, i) => {
+    const v = Math.sin(i * 0.6 + seed) * 0.5 + Math.sin(i * 1.3 + seed * 2) * 0.3 + 0.5;
+    return Math.max(0.12, Math.min(1, v));
+  });
+
+interface Props {
+  src: string;
+  label: string;
+  week?: string;
+  onProgress?: (p: number) => void;
+  onPlayingChange?: (playing: boolean) => void;
+}
+
+export function AudioPlayer({ src, label, week = 'LATEST', onProgress, onPlayingChange }: Props) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0); // 0..1
   const [duration, setDuration] = useState(0);
   const [current, setCurrent] = useState(0);
 
+  const bars = useMemo(() => makeBars(label.length * 7 + 3), [label]);
+
   useEffect(() => {
-    const a = ref.current;
+    const a = audioRef.current;
     if (!a) return;
-    const onTime = () => setCurrent(a.currentTime);
+    const onTime = () => {
+      setCurrent(a.currentTime);
+      const p = a.duration ? a.currentTime / a.duration : 0;
+      setProgress(Math.min(1, p));
+      onProgress?.(Math.min(1, p));
+    };
     const onMeta = () => setDuration(a.duration);
-    const onEnd = () => setPlaying(false);
+    const onEnd = () => {
+      setPlaying(false);
+      onPlayingChange?.(false);
+    };
     a.addEventListener('timeupdate', onTime);
     a.addEventListener('loadedmetadata', onMeta);
     a.addEventListener('ended', onEnd);
@@ -21,12 +46,21 @@ export function AudioPlayer({ src, label }: { src: string; label: string }) {
       a.removeEventListener('loadedmetadata', onMeta);
       a.removeEventListener('ended', onEnd);
     };
-  }, []);
+  }, [onProgress, onPlayingChange]);
 
   const toggle = () => {
-    const a = ref.current;
+    const a = audioRef.current;
     if (!a) return;
-    if (playing) { a.pause(); setPlaying(false); } else { a.play(); setPlaying(true); }
+    if (playing) {
+      a.pause();
+      setPlaying(false);
+      onPlayingChange?.(false);
+    } else {
+      const p = a.play();
+      setPlaying(true);
+      onPlayingChange?.(true);
+      if (p !== undefined) p.catch(err => console.error('[AudioPlayer] play failed', err));
+    }
   };
 
   const fmt = (s: number) => {
@@ -36,59 +70,63 @@ export function AudioPlayer({ src, label }: { src: string; label: string }) {
     return `${m}:${r}`;
   };
 
-  // Fake-but-pleasing waveform: deterministic bars seeded by label length.
-  const bars = useMemo(() => {
-    const n = 56;
-    const seed = label.length * 7 + 3;
-    return Array.from({ length: n }, (_, i) => {
-      const x = Math.sin((i + seed) * 1.7) * Math.cos((i + seed) * 0.9);
-      const base = 0.2 + Math.abs(x) * 0.8;
-      return Math.max(0.12, Math.min(1, base));
-    });
-  }, [label]);
-
-  const playedTo = duration ? (current / duration) * bars.length : 0;
-
   return (
-    <div className="border-2 border-ink">
-      <div className="flex items-center gap-5 p-5 bg-paper">
-        <button
-          onClick={toggle}
-          aria-label={playing ? 'Pause' : 'Play'}
-          className="w-14 h-14 flex items-center justify-center bg-accent border-2 border-ink hover:bg-paper hover:text-ink text-ink"
-        >
-          <span className="text-[22px] leading-none translate-x-[1px]">{playing ? '■' : '▶'}</span>
-        </button>
-        <div className="flex-1">
-          <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-ash mb-1">
-            Digest · {label}
-          </div>
-          <div className="font-serif font-bold text-[18px] leading-tight">
-            For {label}
+    <div className="brutal-border bg-background p-6 md:p-8 relative">
+      <audio ref={audioRef} src={src} preload="metadata" />
+
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggle}
+            aria-label={playing ? 'Pause' : 'Play'}
+            className="w-12 h-12 brutal-border bg-accent-yellow grid place-items-center brutal-hover"
+          >
+            {playing ? (
+              <div className="flex gap-1">
+                <span className="w-1.5 h-4 bg-foreground" />
+                <span className="w-1.5 h-4 bg-foreground" />
+              </div>
+            ) : (
+              <div className="w-0 h-0 border-l-[12px] border-l-foreground border-y-[8px] border-y-transparent ml-1" />
+            )}
+          </button>
+          <div>
+            <div className="font-mono text-xs text-muted-foreground">DIGEST · {week}</div>
+            <div className="font-bold tracking-tight">For {label}</div>
           </div>
         </div>
-        <div className="font-mono text-[13px] tabular-nums text-ink/80">
-          {fmt(current)} <span className="text-ash">/</span> {fmt(duration)}
+        <div className="font-mono text-xs tabular-nums">
+          {fmt(current)} / {fmt(duration)}
         </div>
       </div>
 
-      <div className="border-t-2 border-ink bg-paper px-5 py-6">
-        <div className="flex items-end gap-[3px] h-16">
-          {bars.map((h, i) => {
-            const active = i < playedTo;
-            return (
-              <span
-                key={i}
-                style={{ height: `${Math.round(h * 100)}%` }}
-                className={active ? 'flex-1 bg-ink' : 'flex-1 bg-ink/25'}
-              />
-            );
-          })}
-        </div>
-        <div className="h-px bg-ink mt-4" />
+      {/* Waveform */}
+      <div className="flex items-end gap-[3px] h-20 mb-2">
+        {bars.map((h, i) => {
+          const played = i / bars.length <= progress;
+          const isHead = playing && Math.abs(i / bars.length - progress) < 1 / bars.length;
+          return (
+            <div
+              key={i}
+              className="flex-1 transition-[background-color,transform] duration-200 origin-bottom"
+              style={{
+                height: `${h * 100}%`,
+                backgroundColor: played ? 'hsl(var(--foreground))' : 'hsl(var(--foreground) / 0.18)',
+                transform: isHead ? 'scaleY(1.15)' : 'scaleY(1)',
+              }}
+            />
+          );
+        })}
       </div>
 
-      <audio ref={ref} src={src} preload="metadata" />
+      {/* Progress hint line */}
+      <div className="relative h-[3px] bg-foreground/10">
+        <div
+          className="absolute inset-y-0 left-0 bg-accent-red transition-[width] duration-200"
+          style={{ width: `${progress * 100}%` }}
+        />
+      </div>
     </div>
   );
 }
