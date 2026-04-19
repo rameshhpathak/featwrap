@@ -4,12 +4,20 @@ import { getConnectionIdBySession } from '@/lib/supabase/jobs';
 
 function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 group">
-      <span className="w-8 h-8 brutal-border grid place-items-center bg-accent-yellow">
-        <span className="font-mono font-bold text-base leading-none">F</span>
+    <Link href="/" className="flex items-center gap-3 group">
+      <span
+        className="w-8 h-8 brutal-border grid place-items-center bg-accent-yellow"
+        style={{ transform: 'skewX(-12deg)' }}
+      >
+        <span
+          className="font-mono font-bold text-base text-foreground leading-none"
+          style={{ transform: 'skewX(12deg)' }}
+        >
+          F
+        </span>
       </span>
-      <span className="font-mono font-bold tracking-tight text-base italic">
-        FEATURE <span className="font-normal">wrapped</span>
+      <span className="font-bold tracking-tight text-base italic">
+        Feature Wrapped
       </span>
     </Link>
   );
