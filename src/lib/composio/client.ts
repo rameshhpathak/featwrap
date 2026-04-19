@@ -104,12 +104,28 @@ export async function composioExecute(args: {
   return { data: res.data };
 }
 
-export async function listUserRepos(_connectedAccountId: string): Promise<Array<{ full_name: string; private: boolean }>> {
-  // Composio v0.4's GitHub toolkit has no clean "list my repos" equivalent to
-  // the GitHub REST GET /user/repos (the closest is GITHUB_FIND_REPOSITORIES,
-  // which is search-indexed and unreliable for recent/private repos). Rather
-  // than silently showing an empty dropdown, we return [] so the RepoPicker
-  // UI falls back to a free-text `owner/name` input — which works with any
-  // repo the OAuth token can reach.
-  return [];
+export async function listUserRepos(connectedAccountId: string): Promise<Array<{ full_name: string; private: boolean }>> {
+  // Composio v0.4's GitHub toolkit has no action that matches the GitHub REST
+  // GET /user/repos. `GITHUB_FIND_REPOSITORIES` is search-indexed and misses
+  // recent/private repos. Workaround: Composio's proxy-execute forwards to
+  // the raw GitHub API using the connection's OAuth token.
+  try {
+    const composio = getComposio();
+    const res = (await composio.tools.proxyExecute({
+      endpoint: '/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator',
+      method: 'GET',
+      connectedAccountId,
+      parameters: [],
+    })) as { data?: Array<{ full_name?: string; private?: boolean }>; status?: number };
+    if (!Array.isArray(res.data)) return [];
+    return res.data
+      .map(r => ({
+        full_name: r.full_name ?? '',
+        private: Boolean(r.private),
+      }))
+      .filter(r => r.full_name.length > 0);
+  } catch (err) {
+    console.error('[composio] listUserRepos proxyExecute failed', err);
+    return [];
+  }
 }
