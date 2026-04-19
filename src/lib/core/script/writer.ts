@@ -15,6 +15,7 @@ export interface WriterOptions {
   minWords: number;
   maxWords: number;
   windowDescription: string; // "a day", "a week", "the last month", etc.
+  repo: string;              // "owner/name" — spoken in the mandated opener.
 }
 
 const ANGLES: Record<Audience, string> = {

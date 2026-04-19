@@ -1,5 +1,5 @@
 import { composioExecute } from '@/lib/composio/client';
-import { anthropicComplete } from '@/lib/anthropic';
+import { llmComplete } from '@/lib/llm';
 import { ttsStream } from '@/lib/elevenlabs';
 import { isStubVoice } from '@/lib/env';
 import { supabaseClassificationCache } from '@/lib/supabase/cache';
@@ -18,7 +18,7 @@ export function liveDeps(): PipelineDeps {
     },
     async classifyPRs(prs, repo) {
       return classifyPRs(prs, {
-        llmComplete: anthropicComplete,
+        llmComplete,
         cache: supabaseClassificationCache(),
         repo,
       });
@@ -28,7 +28,7 @@ export function liveDeps(): PipelineDeps {
         prs,
         classifications,
         audience,
-        { llmComplete: anthropicComplete },
+        { llmComplete },
         options,
       );
     },

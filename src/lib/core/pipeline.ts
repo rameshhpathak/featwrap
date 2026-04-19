@@ -7,6 +7,7 @@ export interface WriteScriptOptions {
   minWords: number;
   maxWords: number;
   windowDescription: string;
+  repo: string;
 }
 
 export interface PipelineDeps {
@@ -46,7 +47,7 @@ function parseSinceDays(since: string): number {
  * doesn't come out as long as a monthly one. Roughly: 160 words ≈ 60 s of
  * conversational narration.
  */
-export function targetWordRange(since: string, prCount: number): WriteScriptOptions {
+export function targetWordRange(since: string, prCount: number, repo: string): WriteScriptOptions {
   const days = parseSinceDays(since);
 
   let baseMin: number;
@@ -65,7 +66,7 @@ export function targetWordRange(since: string, prCount: number): WriteScriptOpti
   const minWords = Math.max(80, baseMin + Math.round(prAdjust / 2));
   const maxWords = Math.max(minWords + 60, baseMax + prAdjust);
 
-  return { minWords, maxWords, windowDescription };
+  return { minWords, maxWords, windowDescription, repo };
 }
 
 export async function runPipeline(ctx: PipelineContext, deps: PipelineDeps): Promise<void> {
@@ -85,7 +86,7 @@ export async function runPipeline(ctx: PipelineContext, deps: PipelineDeps): Pro
     const totalAuds = audiences.length;
     const limit = pLimit(2);
 
-    const target = targetWordRange(since, prs.length);
+    const target = targetWordRange(since, prs.length, repo);
 
     await deps.db.updateJob(jobId, { step: 'writing the script', progress: 40 });
 
