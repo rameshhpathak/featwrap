@@ -83,8 +83,26 @@ function ResultPanel({ audience, digest }: { audience: string; digest: Digest })
 
   const bars = useMemo(() => makeBars(audience.length * 7 + 3), [audience]);
   const lines = useMemo(() => (digest.script ? splitLines(digest.script) : []), [digest.script]);
-  const activeLine =
-    lines.length > 0 ? Math.min(lines.length - 1, Math.floor(progress * lines.length)) : -1;
+  // Map playback progress -> transcript line by cumulative character count.
+  // Speaking pace is roughly steady per character, so this tracks the audio
+  // much more faithfully than equal-share-per-line (which drifts as soon as
+  // two adjacent lines have different lengths).
+  const lineEndFractions = useMemo(() => {
+    const ends: number[] = [];
+    const lengths = lines.map(l => Math.max(1, l.length));
+    const total = lengths.reduce((s, n) => s + n, 0);
+    let acc = 0;
+    for (const len of lengths) {
+      acc += len;
+      ends.push(total > 0 ? acc / total : 0);
+    }
+    return ends;
+  }, [lines]);
+  const activeLine = (() => {
+    if (lines.length === 0) return -1;
+    const idx = lineEndFractions.findIndex(end => progress < end);
+    return idx === -1 ? lines.length - 1 : idx;
+  })();
 
   useEffect(() => {
     const a = audioRef.current;
