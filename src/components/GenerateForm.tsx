@@ -4,12 +4,15 @@ import { Button } from './Button';
 import { RepoPicker } from './RepoPicker';
 import { JobView } from './JobView';
 
-const SINCE = [
+export const SINCE = [
   { v: '1d', l: '1 day' },
   { v: '3d', l: '3 days' },
   { v: '7d', l: '7 days' },
   { v: '14d', l: '14 days' },
+  { v: '30d', l: '30 days' },
+  { v: '90d', l: '90 days' },
 ];
+
 const AUDIENCES = [
   { v: 'marketing', code: 'MKT', l: 'Marketing' },
   { v: 'sales', code: 'SLS', l: 'Sales' },
@@ -31,10 +34,12 @@ export function GenerateForm() {
   const [since, setSince] = useState('7d');
   const [audience, setAudience] = useState('marketing');
   const [jobId, setJobId] = useState<string | null>(null);
+  const [activeSince, setActiveSince] = useState('7d');
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  async function submit() {
+  async function submit(overrides?: { since?: string }) {
+    const useSince = overrides?.since ?? since;
     setErr(null);
     if (!repo) { setErr('Pick or type a repo.'); return; }
     setLoading(true);
@@ -42,11 +47,13 @@ export function GenerateForm() {
       const res = await fetch('/api/digests', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ repo, since, audience }),
+        body: JSON.stringify({ repo, since: useSince, audience }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'failed');
       setJobId(data.jobId);
+      setActiveSince(useSince);
+      if (overrides?.since) setSince(useSince);
     } catch (e) {
       setErr(e instanceof Error ? e.message : 'failed');
     } finally {
@@ -54,7 +61,20 @@ export function GenerateForm() {
     }
   }
 
-  if (jobId) return <JobView jobId={jobId} repo={repo} since={since} audience={audience} />;
+  if (jobId) {
+    return (
+      <JobView
+        jobId={jobId}
+        repo={repo}
+        since={activeSince}
+        audience={audience}
+        onRetryWithSince={newSince => {
+          setJobId(null);
+          void submit({ since: newSince });
+        }}
+      />
+    );
+  }
 
   return (
     <div className="border-2 border-ink bg-paper">
@@ -106,7 +126,7 @@ export function GenerateForm() {
       )}
 
       <div className="border-t-2 border-ink p-8 flex flex-wrap items-center gap-5">
-        <Button onClick={submit} disabled={loading}>
+        <Button onClick={() => submit()} disabled={loading}>
           {loading ? 'Starting…' : 'Generate digest →'}
         </Button>
         <span className="font-mono text-[12px] tracking-[0.14em] uppercase text-ash">
