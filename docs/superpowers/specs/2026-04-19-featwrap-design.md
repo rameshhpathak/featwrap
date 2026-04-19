@@ -111,6 +111,17 @@ Each module has one clear purpose, communicates through a well-defined interface
 
 ---
 
+## Brand & aesthetic direction
+
+Featwrap must feel **YC-level minimal-modern** — peer aesthetic to **Browserbase, ElevenLabs, and OpenCode**. This shapes every user-visible surface:
+
+- **CLI output:** restrained ANSI colour, structured alignment, no decorative banners, no emojis in chrome
+- **Web UI (Phase 3):** dark-default, one accent colour, mono font for code (Geist Mono / IBM Plex Mono tier), sans-serif body (Inter / Geist), generous whitespace, thin borders, no drop shadows
+- **README + landing:** short confident sentences, dense information per line, quotable taglines, no marketing fluff
+- **Narration persona:** sharp, confident, startup-founder voice (pick ElevenLabs voice accordingly); not a corporate announcer
+
+Rule of thumb: *if it would look out of place on browserbase.com, elevenlabs.io, or opencode.ai, it's wrong.*
+
 ## Tech stack
 
 | Concern | Choice | Why |
