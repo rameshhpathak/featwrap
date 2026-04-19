@@ -28,14 +28,14 @@ export default function Home() {
       <main>
         <section className="max-w-3xl mx-auto px-6 pt-20 pb-24 w-full">
           <span className="inline-block font-mono text-[11px] tracking-wider px-2 py-1 brutal-border bg-accent-yellow mb-8">
-            ⚡ EARLY ACCESS — CONNECT YOUR REPO
+            ⚡ THE CHANGELOG, BUT LISTENABLE
           </span>
 
           <h1 className="font-bold tracking-tighter leading-[0.95] text-5xl md:text-7xl">
-            This week&apos;s PRs,<br />
-            as a{' '}
+            Agents wrote 100 PRs<br />
+            this week.{' '}
             <span className="relative inline-block">
-              <span className="relative z-10">5-minute podcast.</span>
+              <span className="relative z-10">Hear them.</span>
               <span
                 aria-hidden
                 className="absolute left-0 right-0 bottom-[0.08em] h-[0.28em] bg-accent-yellow -z-0"
@@ -44,9 +44,10 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 text-lg md:text-xl max-w-xl leading-snug">
-            Connect GitHub. Pick a repo. Featwrap reads every merged PR and ships a short audio
-            digest your <span className="font-medium">whole team</span> will actually press play on
-            — written four ways for marketing, sales, support &amp; engineering.
+            AI agents now ship more code than your team can read. Featwrap turns every merged PR
+            into a <span className="font-medium">90-second podcast</span> — re-narrated for
+            marketing, sales, CS, and engineering. One ship log, four stories your whole org
+            actually hears.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -58,16 +59,16 @@ export default function Home() {
 
           <div className="mt-16 grid grid-cols-3 gap-6 max-w-md font-mono text-xs">
             <div>
-              <div className="text-2xl font-bold tracking-tight text-foreground">CONNECT</div>
-              <div className="text-muted-foreground mt-1">GITHUB IN 1 CLICK</div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">MERGE</div>
+              <div className="text-muted-foreground mt-1">WE READ EVERY PR</div>
             </div>
             <div>
-              <div className="text-2xl font-bold tracking-tight text-foreground">LISTEN</div>
-              <div className="text-muted-foreground mt-1">60-90s PER DIGEST</div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">NARRATE</div>
+              <div className="text-muted-foreground mt-1">4 TONES, 1 SHIP LOG</div>
             </div>
             <div>
-              <div className="text-2xl font-bold tracking-tight text-foreground">SHARE</div>
-              <div className="text-muted-foreground mt-1">4 AUDIENCE CUTS</div>
+              <div className="text-2xl font-bold tracking-tight text-foreground">DROP</div>
+              <div className="text-muted-foreground mt-1">90 SEC IN SLACK</div>
             </div>
           </div>
         </section>
