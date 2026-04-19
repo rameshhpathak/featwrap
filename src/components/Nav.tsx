@@ -5,15 +5,20 @@ import { getConnectionIdBySession } from '@/lib/supabase/jobs';
 
 export async function Nav() {
   const session = await getSession();
+  let connected = false;
   let login: string | null = null;
   if (session.sid) {
     const conn = await getConnectionIdBySession(session.sid);
-    login = conn?.github_login ?? null;
+    if (conn) {
+      connected = true;
+      login = conn.github_login ?? null;
+    }
   }
+  const pillLabel = connected ? (login ? `@${login} connected` : 'connected') : 'not connected';
   return (
     <header className="flex items-center justify-between py-6">
       <Link href="/" className="font-sans text-lg font-semibold tracking-tight">featwrap</Link>
-      <Pill>{login ? `@${login} connected` : 'not connected'}</Pill>
+      <Pill>{pillLabel}</Pill>
     </header>
   );
 }

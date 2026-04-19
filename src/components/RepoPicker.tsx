@@ -9,7 +9,7 @@ export function RepoPicker({ value, onChange }: { value: string; onChange: (v: s
 
   useEffect(() => {
     fetch('/api/repos').then(r => r.json()).then(d => {
-      if (d.repos) setRepos(d.repos);
+      if (Array.isArray(d.repos) && d.repos.length > 0) setRepos(d.repos);
       else setErr(true);
     }).catch(() => setErr(true));
   }, []);
