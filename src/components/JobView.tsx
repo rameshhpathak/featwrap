@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { JobLog } from './JobLog';
+import { Results } from './Results';
 
 interface DigestResp {
   audience: string;
@@ -53,15 +54,7 @@ export function JobView({ jobId }: { jobId: string }) {
         error={job.error}
         startedAt={job.createdAt}
       />
-      {job.digests.length > 0 && (
-        <ul className="space-y-4">
-          {job.digests.map(d => (
-            <li key={d.audience} className="font-mono text-[13px]">
-              {d.audience} — {d.audioUrl ? 'ready' : 'rendering…'}
-            </li>
-          ))}
-        </ul>
-      )}
+      {job.digests.length > 0 && <Results digests={job.digests} />}
     </div>
   );
 }
