@@ -21,7 +21,14 @@ interface JobResp {
   digests: DigestResp[];
 }
 
-export function JobView({ jobId }: { jobId: string }) {
+interface JobViewProps {
+  jobId: string;
+  repo: string;
+  since: string;
+  audience: string;
+}
+
+export function JobView({ jobId, repo, since, audience }: JobViewProps) {
   const [job, setJob] = useState<JobResp | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -40,14 +47,20 @@ export function JobView({ jobId }: { jobId: string }) {
     return () => { if (timer.current) clearInterval(timer.current); };
   }, [jobId]);
 
-  if (!job) return <p className="font-mono text-ash">starting…</p>;
+  if (!job) {
+    return (
+      <div className="border-2 border-ink bg-paper p-8 font-mono text-[13px] text-ash">
+        starting…
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10">
       <JobLog
-        repo="— repo —"
-        since="—"
-        audience="—"
+        repo={repo}
+        since={since}
+        audience={audience}
         step={job.step}
         progress={job.progress}
         status={job.status}

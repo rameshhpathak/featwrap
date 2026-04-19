@@ -3,14 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --paper: #f7f5f0;
-  --ink:   #0a0a0a;
-  --ash:   #6e6a62;
-  --rule:  #1a1a1a;
-  --accent:#ff5500;
-  --ok:    #1f7a3a;
-  --err:   #b42318;
+  --paper:   #F3F1E8;
+  --paper-2: #EAE6D8;
+  --ink:     #0A0A0A;
+  --ash:     #767264;
+  --rule:    #0A0A0A;
+  --accent:  #FAE550;
+  --ok:      #1F7A3A;
+  --err:     #B42318;
 }
 
-html, body { background: var(--paper); color: var(--ink); }
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
 * { border-color: var(--ink); }
+
+::selection { background: var(--accent); color: var(--ink); }

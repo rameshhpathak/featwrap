@@ -14,6 +14,10 @@ export function RepoPicker({ value, onChange }: { value: string; onChange: (v: s
     }).catch(() => setErr(true));
   }, []);
 
+  const inputClass =
+    'w-full h-14 px-4 bg-paper-2 border border-ink font-mono text-[15px] ' +
+    'focus:outline-none focus:bg-accent focus:border-ink placeholder:text-ash';
+
   if (err || repos === null) {
     return (
       <input
@@ -21,7 +25,7 @@ export function RepoPicker({ value, onChange }: { value: string; onChange: (v: s
         placeholder="owner/name"
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="w-full bg-transparent border-0 border-b border-ink h-12 text-[17px] font-mono focus:outline-none focus:border-accent"
+        className={inputClass}
       />
     );
   }
@@ -30,7 +34,7 @@ export function RepoPicker({ value, onChange }: { value: string; onChange: (v: s
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="w-full bg-transparent border-0 border-b border-ink h-12 text-[17px] font-mono focus:outline-none focus:border-accent"
+      className={inputClass}
     >
       <option value="">— choose a repo —</option>
       {repos.map(r => (
