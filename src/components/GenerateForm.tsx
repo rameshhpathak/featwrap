@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from './Button';
 import { RepoPicker } from './RepoPicker';
+import { JobView } from './JobView';
 
 const SINCE = [
   { v: '1d', l: '1 day' },
@@ -45,10 +46,7 @@ export function GenerateForm() {
     }
   }
 
-  if (jobId) {
-    // Placeholder; Task 19 replaces this with <JobView jobId={jobId} />.
-    return <p className="font-mono text-ash">job started: {jobId}</p>;
-  }
+  if (jobId) return <JobView jobId={jobId} />;
 
   return (
     <div className="space-y-10">
