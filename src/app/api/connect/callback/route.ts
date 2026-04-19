@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 async function fetchGithubLogin(connectedAccountId: string): Promise<string | null> {
   try {
     const res = await composioExecute({
-      action: 'GITHUB_USERS_GET_AUTHENTICATED',
+      action: 'GITHUB_GET_THE_AUTHENTICATED_USER',
       connectedAccountId,
     });
     const data = res.data as { login?: string } | null;

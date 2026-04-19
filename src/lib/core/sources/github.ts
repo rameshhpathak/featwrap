@@ -45,12 +45,18 @@ export async function listMergedPRs(
   if (!owner || !name) throw new Error(`Invalid repo: ${repo}`);
 
   const res = await executeAction({
-    action: 'GITHUB_PULLS_LIST',
+    action: 'GITHUB_LIST_PULL_REQUESTS',
     connectedAccountId,
     params: { owner, repo: name, state: 'closed', sort: 'updated', direction: 'desc', per_page: 100 },
   });
 
-  const raw = (res.data as RawPR[]) ?? [];
+  // Composio may wrap the GitHub response in various shapes; normalise to array.
+  const payload = res.data as unknown;
+  const raw: RawPR[] = Array.isArray(payload)
+    ? (payload as RawPR[])
+    : ((payload as { items?: RawPR[] } | null)?.items
+        ?? (payload as { data?: RawPR[] } | null)?.data
+        ?? []);
   return raw
     .filter(p => p.merged_at !== null)
     .filter(p => new Date(p.merged_at as string) >= cutoff)
@@ -73,9 +79,9 @@ export async function getPRDiff(
 ): Promise<string> {
   const [owner, name] = repo.split('/');
   const res = await executeAction({
-    action: 'GITHUB_PULLS_GET',
+    action: 'GITHUB_GET_A_PULL_REQUEST',
     connectedAccountId,
-    params: { owner, repo: name, pull_number: prNumber, mediaType: { format: 'diff' } },
+    params: { owner, repo: name, pull_number: prNumber },
   });
   const data = res.data as unknown;
   if (typeof data === 'string') return data;

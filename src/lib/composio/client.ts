@@ -86,16 +86,29 @@ export async function composioExecute(args: {
 }
 
 export async function listUserRepos(connectedAccountId: string): Promise<Array<{ full_name: string; private: boolean }>> {
-  const res = await composioExecute({
-    action: 'GITHUB_REPOS_LIST_FOR_AUTHENTICATED_USER',
-    connectedAccountId,
-    params: { per_page: 100, sort: 'updated' },
-  });
-  // GitHub's /user/repos returns an array; Composio wraps it inside data.
-  // Some action shapes return { items: [...] } instead — handle both.
-  const data = res.data as unknown;
-  const list = Array.isArray(data)
-    ? (data as Array<{ full_name: string; private: boolean }>)
-    : ((data as { items?: Array<{ full_name: string; private: boolean }> })?.items ?? []);
-  return list.map(r => ({ full_name: r.full_name, private: r.private }));
+  // Composio's GitHub toolkit has `GITHUB_FIND_REPOSITORIES` (search-based) but
+  // requires a `query` param, and no exact equivalent to `GET /user/repos`.
+  // Try it with for_authenticated_user=true; if it fails, surface an empty list
+  // so the RepoPicker UI falls back to a free-text `owner/name` input.
+  try {
+    const res = await composioExecute({
+      action: 'GITHUB_FIND_REPOSITORIES',
+      connectedAccountId,
+      params: { query: 'fork:true', for_authenticated_user: true, per_page: 100, sort: 'updated', order: 'desc' },
+    });
+    const data = res.data as unknown;
+    const items =
+      (Array.isArray(data) ? data : null) ??
+      (data as { items?: unknown[] } | null)?.items ??
+      (data as { repositories?: unknown[] } | null)?.repositories ??
+      [];
+    return (items as Array<{ full_name?: string; name?: string; owner?: { login?: string }; private?: boolean }>)
+      .map(r => ({
+        full_name: r.full_name ?? (r.owner?.login && r.name ? `${r.owner.login}/${r.name}` : ''),
+        private: Boolean(r.private),
+      }))
+      .filter(r => r.full_name.length > 0);
+  } catch {
+    return [];
+  }
 }
